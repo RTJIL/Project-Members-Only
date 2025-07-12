@@ -1,0 +1,38 @@
+<!-- sign-up.ejs -->
+<div class="form-container">
+  <form action="/sign-up" method="POST">
+    <label for="username">Username: </label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      required
+      autofocus
+      autocomplete="off"
+    />
+
+    <label for="password">Password: </label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      required
+      autocomplete="new-password"
+    />
+
+    <label for="passcon">Confirm password: </label>
+    <input
+      type="password"
+      id="passcon"
+      name="passcon"
+      required
+      autocomplete="new-password"
+    />
+    <p id="passwordMessage" style="color: red; font-size: 0.9rem"></p>
+
+    <button type="submit" disabled>Sign up</button>
+  </form>
+</div>
+<% scripts = `
+<script src="/js/passMatch.js"></script>
+` %>

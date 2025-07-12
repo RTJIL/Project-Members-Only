@@ -1,0 +1,25 @@
+<div class="home-container">
+  <!-- if clause if logged in show content without log in message -->
+  <div class="recommendation-container">
+    <h2>⛔U shall not pass, if not <a href="/sign-in">signed in</a></h2>
+  </div>
+
+  <!-- if clause if logged in show content without log in message -->
+  <% if (isAuthenticated) { %>
+  <div class="messages-container">
+    <div class="message">
+      <h2>Name</h2>
+
+      <h4>Title</h4>
+      <p>message</p>
+    </div>
+
+    <div class="message">
+      <h2>Name</h2>
+
+      <h4>Title</h4>
+      <p>message</p>
+    </div>
+  </div>
+  <% } %>
+</div>

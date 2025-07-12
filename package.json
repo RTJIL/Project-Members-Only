@@ -1,0 +1,33 @@
+{
+  "name": "project-members-only",
+  "version": "1.0.0",
+  "description": "authentication&authorization with passport and express-session",
+  "homepage": "https://github.com/RTJIL/Project-Members-Only#readme",
+  "bugs": {
+    "url": "https://github.com/RTJIL/Project-Members-Only/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RTJIL/Project-Members-Only.git"
+  },
+  "license": "ISC",
+  "author": "arten",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node db/seed.js",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.16.3"
+  }
+}
