@@ -6,6 +6,7 @@ import connectPgSimple from 'connect-pg-simple'
 import bcrypt from 'bcrypt'
 import db from '../models/queries.js'
 import { pool } from '../db/db.js'
+import cors from 'cors'
 
 const PgSession = connectPgSimple(session)
 
@@ -26,7 +27,9 @@ const setupSession = (app) => {
       saveUninitialized: false,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-        secure: process.env.NODE_ENV === 'production', // only secure in production
+        secure:
+          process.env.NODE_ENV === 'production' &&
+          process.env.ON_RAILWAY === 'true',
         sameSite: 'lax',
       },
     })
@@ -35,6 +38,13 @@ const setupSession = (app) => {
   // 2️⃣ Init passport
   app.use(passport.initialize()) // may work without this line
   app.use(passport.session())
+
+  app.use(
+    cors({
+      origin: '*', // or '*' for all
+      credentials: true,
+    })
+  )
 
   // 3️⃣ Expose/show auth + member info to ejs
   app.use((req, res, next) => {
