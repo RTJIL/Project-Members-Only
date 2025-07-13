@@ -7,6 +7,7 @@ body {
   color: white;
   background-color: rgb(73, 72, 71);
   font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
 }
 
 header,
