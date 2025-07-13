@@ -41,7 +41,7 @@ const setupSession = (app) => {
 
   app.use(
     cors({
-      origin: '*', // or '*' for all
+      origin: 'https://project-members-only-production-b525.up.railway.app', // or '*' for all
       credentials: true,
     })
   )
