@@ -12,7 +12,8 @@ body {
 header,
 main .recommendation-container,
 main .messages-container .message,
-main .form-container form {
+main .form-container form,
+.found-content {
   background-color: rgb(45, 49, 49);
 }
 
@@ -65,6 +66,29 @@ header nav a:hover {
 
 main {
   flex: 1;
+}
+
+main .vip-btn {
+  text-align: center;
+  color: rgb(73, 72, 71);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+main .vip-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main .vip-badge a {
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+main .vip-btn:hover {
+  color: white;
 }
 
 main .home-container {
@@ -150,6 +174,55 @@ main .form-container form input:focus {
 
 main .form-container form button {
   cursor: pointer;
+}
+
+main .form-container .error-messages {
+  font-size: 1rem;
+  color: rgb(255, 73, 73);
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.found-container a {
+  position: relative;
+  color: white;
+  text-decoration: none;
+}
+
+.found-container a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background-color: white;
+  transition: width 0.3s ease-in-out;
+}
+
+.found-container a:hover::after {
+  width: 100%;
+}
+
+.found-content {
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.found-content a {
+  padding-top: 20px;
 }
 
 @media (max-width: 600px) {

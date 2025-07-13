@@ -6,7 +6,6 @@
       type="text"
       id="username"
       name="username"
-      required
       autofocus
       autocomplete="off"
     />
@@ -28,6 +27,13 @@
       required
       autocomplete="new-password"
     />
+    <% if (locals.errors) {%>
+    <ul class="error-messages">
+      <% errors.forEach(function(error) { %>
+      <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+    <% } %>
     <p id="passwordMessage" style="color: red; font-size: 0.9rem"></p>
 
     <button type="submit" disabled>Sign up</button>

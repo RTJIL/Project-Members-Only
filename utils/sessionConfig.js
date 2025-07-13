@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import session from 'express-session'
@@ -8,7 +9,7 @@ const setupSession = (app) => {
   // 1️⃣ Set up session middleware first
   app.use(
     session({
-      secret: 'keyboard cat',
+      secret: process.env.PGSECRET,
       resave: false,
       saveUninitialized: false,
     })
@@ -22,6 +23,7 @@ const setupSession = (app) => {
   app.use((req, res, next) => {
     res.locals.user = req.user
     res.locals.isAuthenticated = req.isAuthenticated?.() || false
+    res.locals.member = req.user?.member || false;
     next()
   })
 
@@ -29,8 +31,10 @@ const setupSession = (app) => {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        const users = await db.getAllUsers()
-        const user = users.find((u) => u.username === username)
+        console.log('Username in Local Strategy: ', username)
+
+        const user = await db.getUserByUname(username)
+
         if (!user) return done(null, false, { message: 'User not found' })
 
         const match = await bcrypt.compare(password, user.password)
@@ -45,17 +49,16 @@ const setupSession = (app) => {
 
   // 5️⃣ Serialize the user — saves the user ID in the cookie
   passport.serializeUser((user, done) => {
-    done(null, user.id)
+    return done(null, user.id)
   })
 
   // 6️⃣ Deserialize — gets user from the database each time using the ID
   passport.deserializeUser(async (id, done) => {
     try {
-      const users = await db.getAllUsers()
-      const user = users.find((u) => u.id === id)
-      done(null, user)
+      const user = await db.getUserById(id)
+      return done(null, user)
     } catch (err) {
-      done(err)
+      return done(err)
     }
   })
 }
