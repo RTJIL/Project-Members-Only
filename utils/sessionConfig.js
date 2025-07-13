@@ -2,28 +2,42 @@ import 'dotenv/config'
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import session from 'express-session'
+import connectPgSimple from 'connect-pg-simple'
 import bcrypt from 'bcrypt'
 import db from '../models/queries.js'
+import { pool } from '../db/db.js'
+
+const PgSession = connectPgSimple(session)
 
 const setupSession = (app) => {
-  // 1️⃣ Set up session middleware first
+  // 1️⃣ Set up session middleware WITH PostgreSQL store
   app.use(
     session({
+      store: new PgSession({
+        pool: pool,
+        tableName: 'session',
+        createTableIfMissing: true,
+      }),
       secret: process.env.PGSECRET,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        secure: process.env.NODE_ENV === 'production', // only secure in production
+        sameSite: 'lax',
+      },
     })
   )
 
-  // 2️⃣ Set up passport middleware
-  app.use(passport.initialize())
-  app.use(passport.session()) // this adds req.user and req.isAuthenticated()
+  // 2️⃣ Init passport
+  app.use(passport.initialize()) // may work without this line
+  app.use(passport.session())
 
-  // 3️⃣ Set up res.locals for use in EJS
+  // 3️⃣ Expose/show auth + member info to ejs
   app.use((req, res, next) => {
     res.locals.user = req.user
     res.locals.isAuthenticated = req.isAuthenticated?.() || false
-    res.locals.member = req.user?.member || false;
+    res.locals.member = req.user?.member || false
     next()
   })
 
@@ -31,10 +45,7 @@ const setupSession = (app) => {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        console.log('Username in Local Strategy: ', username)
-
         const user = await db.getUserByUname(username)
-
         if (!user) return done(null, false, { message: 'User not found' })
 
         const match = await bcrypt.compare(password, user.password)
@@ -47,18 +58,18 @@ const setupSession = (app) => {
     })
   )
 
-  // 5️⃣ Serialize the user — saves the user ID in the cookie
+  // 5️⃣ Serialize user (saves ID in session cookies)
   passport.serializeUser((user, done) => {
-    return done(null, user.id)
+    done(null, user.id)
   })
 
-  // 6️⃣ Deserialize — gets user from the database each time using the ID
+  // 6️⃣ Deserialize (fetch full user by ID from DB when tripping wihin site)
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await db.getUserById(id)
-      return done(null, user)
+      done(null, user)
     } catch (err) {
-      return done(err)
+      done(err)
     }
   })
 }
