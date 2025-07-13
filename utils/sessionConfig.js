@@ -10,13 +10,16 @@ import { pool } from '../db/db.js'
 const PgSession = connectPgSimple(session)
 
 const setupSession = (app) => {
+  /*   if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1)
+  } */
+
   // 1️⃣ Set up session middleware WITH PostgreSQL store
   app.use(
     session({
       store: new PgSession({
         pool: pool,
         tableName: 'session',
-        createTableIfMissing: true,
       }),
       secret: process.env.SECRET,
       resave: false,
@@ -60,6 +63,7 @@ const setupSession = (app) => {
 
   // 5️⃣ Serialize user (saves ID in session cookies)
   passport.serializeUser((user, done) => {
+    console.log('Serialized user:', user)
     done(null, user.id)
   })
 
@@ -67,6 +71,7 @@ const setupSession = (app) => {
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await db.getUserById(id)
+      console.log('Deserialized user:', user)
       done(null, user)
     } catch (err) {
       done(err)
