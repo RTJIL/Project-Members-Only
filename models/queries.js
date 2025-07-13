@@ -105,10 +105,11 @@ const getAllMessages = async () => {
 
 const getAllPosts = async () => {
   const SQL = `
-  SELECT title, message, username 
-  FROM messages AS M 
-  INNER JOIN users AS U
-  ON M.user_id = U.id
+    SELECT title, message, username 
+    FROM messages AS M 
+    INNER JOIN users AS U
+    ON M.user_id = U.id
+    ORDER BY M.id DESC
   `
 
   try {
@@ -128,53 +129,47 @@ const getAllPosts = async () => {
 
 const getVip = async (id) => {
   try {
-    const res = await pool.query('SELECT member FROM users WHERE id = $1', [id]);
+    const res = await pool.query('SELECT member FROM users WHERE id = $1', [id])
 
     if (res.rows.length === 0) {
-      throw new Error('User not found');
+      throw new Error('User not found')
     }
 
-    const isMember = res.rows[0].member;
+    const isMember = res.rows[0].member
 
     if (!isMember) {
-      await pool.query(
-        `UPDATE users SET member = true WHERE id = $1`,
-        [id]
-      );
-      console.log('User upgraded to VIP');
+      await pool.query(`UPDATE users SET member = true WHERE id = $1`, [id])
+      console.log('User upgraded to VIP')
     } else {
-      console.log('User already a VIP');
+      console.log('User already a VIP')
     }
   } catch (err) {
-    console.error('Error in getVip:', err);
-    throw err;
+    console.error('Error in getVip:', err)
+    throw err
   }
-};
+}
 
 const deleteVip = async (id) => {
   try {
-    const res = await pool.query('SELECT member FROM users WHERE id = $1', [id]);
+    const res = await pool.query('SELECT member FROM users WHERE id = $1', [id])
 
     if (res.rows.length === 0) {
-      throw new Error('User not found');
+      throw new Error('User not found')
     }
 
-    const isMember = res.rows[0].member;
+    const isMember = res.rows[0].member
 
     if (isMember) {
-      await pool.query(
-        `UPDATE users SET member = false WHERE id = $1`,
-        [id]
-      );
-      console.log('User sell VIP');
+      await pool.query(`UPDATE users SET member = false WHERE id = $1`, [id])
+      console.log('User sell VIP')
     } else {
-      console.log('User already a VIP');
+      console.log('User already a VIP')
     }
   } catch (err) {
-    console.error('Error in getVip:', err);
-    throw err;
+    console.error('Error in getVip:', err)
+    throw err
   }
-};
+}
 
 export default {
   postUser,
@@ -185,5 +180,5 @@ export default {
   getAllMessages,
   getAllPosts,
   getVip,
-  deleteVip
+  deleteVip,
 }
