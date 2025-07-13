@@ -18,7 +18,7 @@ const setupSession = (app) => {
         tableName: 'session',
         createTableIfMissing: true,
       }),
-      secret: process.env.PGSECRET,
+      secret: process.env.SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
