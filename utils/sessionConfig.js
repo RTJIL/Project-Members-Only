@@ -11,9 +11,9 @@ import cors from 'cors'
 const PgSession = connectPgSimple(session)
 
 const setupSession = (app) => {
-  /*   if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1)
-  } */
+  }
 
   // 1️⃣ Set up session middleware WITH PostgreSQL store
   app.use(
